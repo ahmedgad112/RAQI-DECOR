@@ -110,7 +110,7 @@ class AdminSiteSettingsTest extends TestCase
         $this->get(route('home'))
             ->assertOk()
             ->assertSee('https://instagram.com/raqidecor', false)
-            ->assertSee('Instagram');
+            ->assertSee('aria-label="Instagram"', false);
     }
 
     public function test_guest_cannot_update_settings(): void

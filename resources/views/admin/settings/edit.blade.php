@@ -196,6 +196,7 @@
             <div class="md:col-span-3">
                 <label class="admin-label">رابط خريطة جوجل</label>
                 <input type="url" name="contact_map_url" value="{{ old('contact_map_url', $settings['contact_map_url'] ?? '') }}" class="admin-input" dir="ltr" placeholder="https://maps.app.goo.gl/...">
+                <p class="mt-2 text-xs text-brown/55">يفتح الرابط خارجياً. لعرض الخريطة داخل الصفحة أدخل خط العرض والطول، أو الصق رابط خريطة يحتوي الإحداثيات، أو رابط التضمين (embed).</p>
             </div>
             <div>
                 <label class="admin-label">خط العرض (Latitude)</label>
@@ -204,6 +205,7 @@
             <div>
                 <label class="admin-label">خط الطول (Longitude)</label>
                 <input type="text" name="contact_map_lng" value="{{ old('contact_map_lng', $settings['contact_map_lng'] ?? '') }}" class="admin-input" dir="ltr" placeholder="46.710465">
+                <p class="mt-2 text-xs text-brown/55">مطلوبان لظهور الخريطة المضمّنة. عند حفظ رابط مختصر قد يُملآن تلقائياً إن أمكن.</p>
             </div>
         </div>
     </section>

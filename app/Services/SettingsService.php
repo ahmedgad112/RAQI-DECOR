@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\SiteSetting;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -64,6 +65,8 @@ class SettingsService
                 : 'center';
         }
 
+        $values = $this->hydrateMapCoordinates($values);
+
         foreach ($values as $key => $value) {
             if (! is_string($key)) {
                 continue;
@@ -104,15 +107,27 @@ class SettingsService
         $lat = $this->coordinate($settings['contact_map_lat'] ?? null);
         $lng = $this->coordinate($settings['contact_map_lng'] ?? null);
 
-        if ($lat === null || $lng === null) {
+        if ($lat !== null && $lng !== null) {
+            return $this->embedUrlFromCoordinates($lat, $lng);
+        }
+
+        $url = trim((string) ($settings['contact_map_url'] ?? ''));
+
+        if ($url === '' || ! filter_var($url, FILTER_VALIDATE_URL)) {
             return null;
         }
 
-        return sprintf(
-            'https://maps.google.com/maps?q=%s,%s&hl=ar&z=16&output=embed',
-            $lat,
-            $lng
-        );
+        if ($this->isGoogleMapsEmbedUrl($url)) {
+            return $url;
+        }
+
+        $coords = $this->coordinatesFromMapUrl($url);
+
+        if ($coords !== null) {
+            return $this->embedUrlFromCoordinates($coords['lat'], $coords['lng']);
+        }
+
+        return null;
     }
 
     public function mapExternalUrl(?array $settings = null): ?string
@@ -145,6 +160,126 @@ class SettingsService
         }
 
         return number_format((float) $value, 6, '.', '');
+    }
+
+    /**
+     * @param  array<string, mixed>  $values
+     * @return array<string, mixed>
+     */
+    private function hydrateMapCoordinates(array $values): array
+    {
+        $url = trim((string) ($values['contact_map_url'] ?? ''));
+
+        if ($url === '' || ! filter_var($url, FILTER_VALIDATE_URL)) {
+            return $values;
+        }
+
+        $hasLat = $this->coordinate($values['contact_map_lat'] ?? null) !== null;
+        $hasLng = $this->coordinate($values['contact_map_lng'] ?? null) !== null;
+
+        if ($hasLat && $hasLng) {
+            return $values;
+        }
+
+        $coords = $this->coordinatesFromMapUrl($url)
+            ?? $this->coordinatesFromResolvableMapUrl($url);
+
+        if ($coords === null) {
+            return $values;
+        }
+
+        if (! $hasLat) {
+            $values['contact_map_lat'] = $coords['lat'];
+        }
+
+        if (! $hasLng) {
+            $values['contact_map_lng'] = $coords['lng'];
+        }
+
+        return $values;
+    }
+
+    private function embedUrlFromCoordinates(string $lat, string $lng): string
+    {
+        return sprintf(
+            'https://maps.google.com/maps?q=%s,%s&hl=ar&z=16&output=embed',
+            $lat,
+            $lng
+        );
+    }
+
+    private function isGoogleMapsEmbedUrl(string $url): bool
+    {
+        $normalized = Str::lower($url);
+
+        return str_contains($normalized, '/maps/embed')
+            || str_contains($normalized, 'output=embed');
+    }
+
+    /**
+     * @return array{lat: string, lng: string}|null
+     */
+    private function coordinatesFromMapUrl(string $url): ?array
+    {
+        $patterns = [
+            '/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/',
+            '/[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/',
+            '/[?&]ll=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/',
+            '/!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/',
+            '/place\/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (! preg_match($pattern, $url, $matches)) {
+                continue;
+            }
+
+            $lat = $this->coordinate($matches[1] ?? null);
+            $lng = $this->coordinate($matches[2] ?? null);
+
+            if ($lat !== null && $lng !== null) {
+                return ['lat' => $lat, 'lng' => $lng];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array{lat: string, lng: string}|null
+     */
+    private function coordinatesFromResolvableMapUrl(string $url): ?array
+    {
+        $host = Str::lower((string) parse_url($url, PHP_URL_HOST));
+
+        if (! str_contains($host, 'maps.app.goo.gl') && ! str_contains($host, 'goo.gl')) {
+            return null;
+        }
+
+        try {
+            $response = Http::connectTimeout(3)
+                ->timeout(8)
+                ->withOptions([
+                    'allow_redirects' => [
+                        'max' => 8,
+                        'track_redirects' => true,
+                    ],
+                ])
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (compatible; RaqiDecorBot/1.0)',
+                ])
+                ->get($url);
+
+            $finalUrl = (string) ($response->effectiveUri() ?? '');
+
+            if ($finalUrl === '') {
+                return null;
+            }
+
+            return $this->coordinatesFromMapUrl($finalUrl);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     /**

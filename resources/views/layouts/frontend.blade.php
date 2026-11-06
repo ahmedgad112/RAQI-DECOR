@@ -50,6 +50,7 @@
     @yield('preload')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
     <script type="application/ld+json">
         {!! json_encode(

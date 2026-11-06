@@ -14,7 +14,11 @@
         <div class="reveal lg:col-span-5">
             <div class="sticky top-28 overflow-hidden rounded-[1.75rem] bg-mist">
                 @if (! empty($settings['hero_image']))
-                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($settings['hero_image']) }}" alt="RAQI DECOR" class="aspect-[4/5] h-full w-full object-cover" loading="lazy">
+                    @php
+                        /** @var \Illuminate\Filesystem\FilesystemAdapter $publicDisk */
+                        $publicDisk = \Illuminate\Support\Facades\Storage::disk('public');
+                    @endphp
+                    <img src="{{ $publicDisk->url($settings['hero_image']) }}" alt="RAQI DECOR" class="aspect-[4/5] h-full w-full object-cover" loading="lazy">
                 @else
                     <img src="{{ asset('images/hero-placeholder.svg') }}" alt="RAQI DECOR" class="aspect-[4/5] h-full w-full object-cover">
                 @endif

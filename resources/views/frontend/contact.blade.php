@@ -43,10 +43,8 @@
             @if (! empty($socialLinks))
                 <div class="surface p-6">
                     <p class="eyebrow">Social</p>
-                    <div class="mt-4 space-y-3 text-base text-brown">
-                        @foreach ($socialLinks as $link)
-                            <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer" class="block hover:text-gold">{{ $link['label'] }}</a>
-                        @endforeach
+                    <div class="mt-4">
+                        @include('partials.frontend.social-links', ['tone' => 'light'])
                     </div>
                 </div>
             @endif

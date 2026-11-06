@@ -47,10 +47,8 @@
         </div>
 
         @if (! empty($socialLinks))
-            <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-ivory/10 pt-6 text-sm text-ivory/70">
-                @foreach ($socialLinks as $link)
-                    <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer" class="hover:text-gold">{{ $link['label'] }}</a>
-                @endforeach
+            <div class="mt-10 border-t border-ivory/10 pt-6">
+                @include('partials.frontend.social-links', ['tone' => 'dark'])
             </div>
         @endif
 
