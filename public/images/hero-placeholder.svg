@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="RAQI DECOR">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#DED0BC"/>
+      <stop offset="55%" stop-color="#B69A70"/>
+      <stop offset="100%" stop-color="#352A24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#g)"/>
+  <rect x="120" y="120" width="1360" height="760" fill="none" stroke="#F5F0E8" stroke-opacity="0.25"/>
+  <text x="800" y="500" text-anchor="middle" fill="#F5F0E8" font-family="Georgia, serif" font-size="64" letter-spacing="12">RAQI DECOR</text>
+  <text x="800" y="560" text-anchor="middle" fill="#F5F0E8" fill-opacity="0.75" font-family="Georgia, serif" font-size="22" letter-spacing="8">INTERIOR ARCHITECTURE</text>
+</svg>
