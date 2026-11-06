@@ -21,19 +21,19 @@
             @foreach ($project->images as $image)
                 <div class="border border-beige bg-ivory p-3" data-image-id="{{ $image->id }}">
                     <img src="{{ $image->url('thumb') }}" alt="" class="aspect-[4/3] w-full object-cover">
-                    <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                    <div class="mt-3 flex flex-wrap gap-2">
                         @if ($image->is_cover)
-                            <span class="text-gold">غلاف</span>
+                            <span class="admin-action-btn admin-action-btn--gold pointer-events-none">غلاف</span>
                         @else
                             <form method="POST" action="{{ route('admin.projects.images.cover', [$project, $image]) }}">
                                 @csrf
-                                <button class="text-brown/70 hover:text-gold">تعيين كغلاف</button>
+                                <button type="submit" class="admin-action-btn">تعيين كغلاف</button>
                             </form>
                         @endif
                         <form method="POST" action="{{ route('admin.projects.images.destroy', [$project, $image]) }}" onsubmit="return confirm('حذف الصورة؟')">
                             @csrf
                             @method('DELETE')
-                            <button class="text-red-700">حذف</button>
+                            <button type="submit" class="admin-action-btn admin-action-btn--danger">حذف</button>
                         </form>
                     </div>
                 </div>

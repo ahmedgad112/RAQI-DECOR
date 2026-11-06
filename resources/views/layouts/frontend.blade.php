@@ -6,61 +6,62 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @php
-        $pageTitle = $seoTitle ?? ($siteSettings['seo_title'] ?? config('app.name'));
-        $pageDescription = $seoDescription ?? ($siteSettings['seo_description'] ?? '');
-        $canonical = $canonicalUrl ?? url()->current();
-        $ogImage = $ogImageUrl ?? (isset($siteSettings['hero_image']) && $siteSettings['hero_image']
-            ? url(\Illuminate\Support\Facades\Storage::disk('public')->url($siteSettings['hero_image']))
-            : url('images/og-default.jpg'));
+        /** @var \App\Services\SeoService $seo */
+        $seo = app(\App\Services\SeoService::class);
+        $pageTitle = $seoMeta['title'] ?? ($seoTitle ?? ($siteSettings['seo_title'] ?? config('app.name')));
+        $pageDescription = $seoMeta['description'] ?? ($seoDescription ?? ($siteSettings['seo_description'] ?? ''));
+        $canonical = $seoMeta['canonical'] ?? ($canonicalUrl ?? url()->current());
+        $ogImage = $seoMeta['image'] ?? ($ogImageUrl ?? $seo->defaultOgImage($siteSettings));
+        $ogImageAlt = $seoMeta['imageAlt'] ?? ($siteSettings['site_name_ar'] ?? 'RAQI DECOR');
+        $ogType = $seoMeta['type'] ?? 'website';
+        $robots = $seoMeta['robots'] ?? 'index,follow,max-image-preview:large';
+        $siteName = $seoMeta['siteName'] ?? ($siteSettings['site_name_en'] ?? 'RAQI DECOR');
     @endphp
 
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDescription }}">
+    <meta name="author" content="{{ $siteName }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="canonical" href="{{ $canonical }}">
-    <meta property="og:type" content="website">
+    <link rel="alternate" hreflang="ar" href="{{ $canonical }}">
+    <link rel="alternate" hreflang="x-default" href="{{ $canonical }}">
+    <meta property="og:type" content="{{ $ogType }}">
+    <meta property="og:site_name" content="{{ $siteName }}">
     <meta property="og:locale" content="ar_SA">
+    <meta property="og:locale:alternate" content="en_US">
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $pageDescription }}">
     <meta property="og:url" content="{{ $canonical }}">
     <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:image:alt" content="{{ $ogImageAlt }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $pageTitle }}">
     <meta name="twitter:description" content="{{ $pageDescription }}">
     <meta name="twitter:image" content="{{ $ogImage }}">
-    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="twitter:image:alt" content="{{ $ogImageAlt }}">
+    <meta name="robots" content="{{ $robots }}">
+    <meta name="googlebot" content="{{ $robots }}">
     <meta name="theme-color" content="#F5F0E8">
 
     @stack('meta')
+    @yield('preload')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    @php
-        $schemaLogo = ! empty($siteSettings['logo_path'] ?? null)
-            ? url(\Illuminate\Support\Facades\Storage::disk('public')->url($siteSettings['logo_path']))
-            : url('images/logo.png');
-    @endphp
     <script type="application/ld+json">
-        {!! json_encode([
-            '@context' => 'https://schema.org',
-            '@type' => 'InteriorDesigner',
-            'name' => $siteSettings['site_name_en'] ?? 'RAQI DECOR',
-            'alternateName' => $siteSettings['site_name_ar'] ?? 'راقي ديكور',
-            'url' => config('app.url'),
-            'logo' => $schemaLogo,
-            'image' => $schemaLogo,
-            'email' => $siteSettings['contact_email'] ?? null,
-            'telephone' => $siteSettings['contact_phone'] ?? null,
-            'description' => $pageDescription,
-            'address' => [
-                '@type' => 'PostalAddress',
-                'addressCountry' => 'SA',
-                'addressLocality' => $siteSettings['contact_address_en'] ?? 'Saudi Arabia',
-            ],
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) !!}
+        {!! json_encode(
+            $seo->organizationSchema($siteSettings, $socialLinks ?? [], $mapExternalUrl ?? null),
+            JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT
+        ) !!}
+    </script>
+    <script type="application/ld+json">
+        {!! json_encode(
+            $seo->websiteSchema($siteSettings),
+            JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT
+        ) !!}
     </script>
 </head>
 <body class="min-h-screen bg-ivory text-brown">

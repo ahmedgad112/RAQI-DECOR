@@ -97,6 +97,56 @@ class SettingsService
         return SiteSetting::cached();
     }
 
+    public function mapEmbedUrl(?array $settings = null): ?string
+    {
+        $settings ??= $this->all();
+
+        $lat = $this->coordinate($settings['contact_map_lat'] ?? null);
+        $lng = $this->coordinate($settings['contact_map_lng'] ?? null);
+
+        if ($lat === null || $lng === null) {
+            return null;
+        }
+
+        return sprintf(
+            'https://maps.google.com/maps?q=%s,%s&hl=ar&z=16&output=embed',
+            $lat,
+            $lng
+        );
+    }
+
+    public function mapExternalUrl(?array $settings = null): ?string
+    {
+        $settings ??= $this->all();
+        $url = trim((string) ($settings['contact_map_url'] ?? ''));
+
+        if ($url !== '' && filter_var($url, FILTER_VALIDATE_URL)) {
+            return $url;
+        }
+
+        $lat = $this->coordinate($settings['contact_map_lat'] ?? null);
+        $lng = $this->coordinate($settings['contact_map_lng'] ?? null);
+
+        if ($lat === null || $lng === null) {
+            return null;
+        }
+
+        return sprintf('https://www.google.com/maps?q=%s,%s', $lat, $lng);
+    }
+
+    private function coordinate(mixed $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (! is_numeric($value)) {
+            return null;
+        }
+
+        return number_format((float) $value, 6, '.', '');
+    }
+
     /**
      * @return list<array{label: string, url: string}>
      */

@@ -35,6 +35,9 @@
                 <div class="surface p-6">
                     <p class="eyebrow">Address</p>
                     <p class="mt-3 text-base text-brown">{{ $settings['contact_address_ar'] }}</p>
+                    @if (! empty($mapExternalUrl))
+                        <a href="{{ $mapExternalUrl }}" target="_blank" rel="noopener noreferrer" class="btn-ghost mt-5">افتح في خرائط جوجل</a>
+                    @endif
                 </div>
             @endif
             @if (! empty($socialLinks))
@@ -49,7 +52,7 @@
             @endif
         </div>
 
-        <div class="reveal reveal-delay-1 lg:col-span-8">
+        <div class="reveal reveal-delay-1 space-y-6 lg:col-span-8">
             <form method="POST" action="{{ route('contact.store') }}" class="surface p-6 md:p-9">
                 @csrf
                 <div class="hidden" aria-hidden="true">
@@ -88,6 +91,30 @@
                 <p class="mt-6 text-sm text-brown/55">بعد الإرسال تُحفظ رسالتك لدينا، ويُفتح واتساب لإرسالها مباشرة.</p>
                 <button type="submit" class="btn-solid mt-4">إرسال الرسالة</button>
             </form>
+
+            @if (! empty($mapEmbedUrl))
+                <div class="surface overflow-hidden p-0">
+                    <div class="flex flex-wrap items-end justify-between gap-3 border-b border-line px-6 py-5">
+                        <div>
+                            <p class="eyebrow">Location</p>
+                            <h2 class="mt-2 text-xl font-medium">موقعنا على الخريطة</h2>
+                        </div>
+                        @if (! empty($mapExternalUrl))
+                            <a href="{{ $mapExternalUrl }}" target="_blank" rel="noopener noreferrer" class="btn-gold-outline !px-5 !py-2 text-xs">فتح الخريطة</a>
+                        @endif
+                    </div>
+                    <div class="aspect-[16/10] w-full bg-mist">
+                        <iframe
+                            title="موقع راقي ديكور على خرائط جوجل"
+                            src="{{ $mapEmbedUrl }}"
+                            class="h-full w-full border-0"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            allowfullscreen
+                        ></iframe>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </section>

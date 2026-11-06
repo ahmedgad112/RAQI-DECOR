@@ -27,12 +27,12 @@
                     <td class="px-4 py-3">{{ $category->projects_count }}</td>
                     <td class="px-4 py-3">{{ $category->is_active ? 'نشطة' : 'موقوفة' }}</td>
                     <td class="px-4 py-3">
-                        <div class="flex gap-3">
-                            <a href="{{ route('admin.categories.edit', $category) }}" class="text-gold">تعديل</a>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="{{ route('admin.categories.edit', $category) }}" class="admin-action-btn admin-action-btn--gold">تعديل</a>
                             <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm('حذف الفئة؟')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-700">حذف</button>
+                                <button type="submit" class="admin-action-btn admin-action-btn--danger">حذف</button>
                             </form>
                         </div>
                     </td>

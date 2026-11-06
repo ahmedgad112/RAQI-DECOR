@@ -9,41 +9,107 @@
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/admin.js'])
 </head>
 <body class="min-h-screen bg-ivory text-brown">
     <div class="min-h-screen lg:grid lg:grid-cols-[280px_1fr]">
-        <aside class="border-b border-charcoal/10 bg-charcoal text-ivory lg:min-h-screen lg:border-b-0">
-            <div class="px-6 py-7">
-                <img src="{{ asset('images/logo.png') }}" alt="RAQI DECOR" class="h-10 w-10 object-contain" width="40" height="40">
-                <p class="font-display mt-3 text-lg tracking-[0.22em]">RAQI DECOR</p>
-                <p class="mt-2 text-xs text-beige/70">Modern Admin</p>
+        <aside class="admin-sidebar flex flex-col border-b border-white/5 bg-charcoal text-ivory lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-e lg:border-white/5">
+            <div class="admin-sidebar__brand shrink-0 px-6 py-7">
+                <div class="flex items-center gap-3">
+                    <span class="flex size-11 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10">
+                        <img src="{{ asset('images/logo.png') }}" alt="RAQI DECOR" class="h-8 w-8 object-contain" width="32" height="32">
+                    </span>
+                    <div>
+                        <p class="font-display text-lg tracking-[0.22em]">RAQI DECOR</p>
+                        <p class="mt-1 text-[11px] tracking-wide text-beige/55">لوحة الإدارة</p>
+                    </div>
+                </div>
             </div>
-            <nav class="space-y-1 px-3 pb-8 text-sm">
-                @if (auth()->user()?->hasPermission(\App\Enums\AdminPermission::Dashboard))
-                    <a href="{{ route('admin.dashboard') }}" class="admin-nav-link {{ request()->routeIs('admin.dashboard') ? 'bg-gold/15 text-gold' : 'hover:bg-white/5' }}">لوحة التحكم</a>
+
+            <nav class="admin-sidebar__nav flex-1 space-y-6 overflow-y-auto px-3 pb-4 text-sm">
+                @php
+                    $canDashboard = auth()->user()?->hasPermission(\App\Enums\AdminPermission::Dashboard);
+                    $canProjects = auth()->user()?->hasPermission(\App\Enums\AdminPermission::Projects);
+                    $canCategories = auth()->user()?->hasPermission(\App\Enums\AdminPermission::Categories);
+                    $canMessages = auth()->user()?->hasPermission(\App\Enums\AdminPermission::Messages);
+                    $canUsers = auth()->user()?->hasPermission(\App\Enums\AdminPermission::Users);
+                    $canSettings = auth()->user()?->hasPermission(\App\Enums\AdminPermission::Settings);
+                    $hasContent = $canProjects || $canCategories || $canMessages;
+                    $hasSystem = $canUsers || $canSettings;
+                @endphp
+
+                @if ($canDashboard)
+                    <div class="admin-sidebar__group">
+                        <p class="admin-sidebar__label">الرئيسية</p>
+                        <div class="space-y-1">
+                            <a href="{{ route('admin.dashboard') }}" class="admin-nav-link {{ request()->routeIs('admin.dashboard') ? 'is-active' : '' }}">
+                                <span class="admin-nav-link__dot"></span>
+                                لوحة التحكم
+                            </a>
+                        </div>
+                    </div>
                 @endif
-                @if (auth()->user()?->hasPermission(\App\Enums\AdminPermission::Projects))
-                    <a href="{{ route('admin.projects.index') }}" class="admin-nav-link {{ request()->routeIs('admin.projects.*') ? 'bg-gold/15 text-gold' : 'hover:bg-white/5' }}">الأعمال</a>
+
+                @if ($hasContent)
+                    <div class="admin-sidebar__group">
+                        <p class="admin-sidebar__label">المحتوى</p>
+                        <div class="space-y-1">
+                            @if ($canProjects)
+                                <a href="{{ route('admin.projects.index') }}" class="admin-nav-link {{ request()->routeIs('admin.projects.*') ? 'is-active' : '' }}">
+                                    <span class="admin-nav-link__dot"></span>
+                                    الأعمال
+                                </a>
+                            @endif
+                            @if ($canCategories)
+                                <a href="{{ route('admin.categories.index') }}" class="admin-nav-link {{ request()->routeIs('admin.categories.*') ? 'is-active' : '' }}">
+                                    <span class="admin-nav-link__dot"></span>
+                                    الفئات
+                                </a>
+                            @endif
+                            @if ($canMessages)
+                                <a href="{{ route('admin.messages.index') }}" class="admin-nav-link {{ request()->routeIs('admin.messages.*') ? 'is-active' : '' }}">
+                                    <span class="admin-nav-link__dot"></span>
+                                    الرسائل
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                 @endif
-                @if (auth()->user()?->hasPermission(\App\Enums\AdminPermission::Categories))
-                    <a href="{{ route('admin.categories.index') }}" class="admin-nav-link {{ request()->routeIs('admin.categories.*') ? 'bg-gold/15 text-gold' : 'hover:bg-white/5' }}">الفئات</a>
+
+                @if ($hasSystem)
+                    <div class="admin-sidebar__group">
+                        <p class="admin-sidebar__label">النظام</p>
+                        <div class="space-y-1">
+                            @if ($canUsers)
+                                <a href="{{ route('admin.users.index') }}" class="admin-nav-link {{ request()->routeIs('admin.users.*') ? 'is-active' : '' }}">
+                                    <span class="admin-nav-link__dot"></span>
+                                    المستخدمون
+                                </a>
+                            @endif
+                            @if ($canSettings)
+                                <a href="{{ route('admin.settings.edit') }}" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'is-active' : '' }}">
+                                    <span class="admin-nav-link__dot"></span>
+                                    إعدادات الموقع
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                 @endif
-                @if (auth()->user()?->hasPermission(\App\Enums\AdminPermission::Messages))
-                    <a href="{{ route('admin.messages.index') }}" class="admin-nav-link {{ request()->routeIs('admin.messages.*') ? 'bg-gold/15 text-gold' : 'hover:bg-white/5' }}">الرسائل</a>
-                @endif
-                @if (auth()->user()?->hasPermission(\App\Enums\AdminPermission::Users))
-                    <a href="{{ route('admin.users.index') }}" class="admin-nav-link {{ request()->routeIs('admin.users.*') ? 'bg-gold/15 text-gold' : 'hover:bg-white/5' }}">المستخدمون</a>
-                @endif
-                @if (auth()->user()?->hasPermission(\App\Enums\AdminPermission::Settings))
-                    <a href="{{ route('admin.settings.edit') }}" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'bg-gold/15 text-gold' : 'hover:bg-white/5' }}">إعدادات الموقع</a>
-                @endif
-                <a href="{{ route('home') }}" target="_blank" class="admin-nav-link hover:bg-white/5">عرض الموقع</a>
-                <form method="POST" action="{{ route('admin.logout') }}" class="pt-3">
-                    @csrf
-                    <button type="submit" class="admin-nav-link w-full text-start hover:bg-white/5">تسجيل الخروج</button>
-                </form>
             </nav>
+
+            <div class="admin-sidebar__footer shrink-0 space-y-1 border-t border-white/8 px-3 py-4">
+                <a href="{{ route('home') }}" target="_blank" class="admin-nav-link admin-nav-link--muted">
+                    <span class="admin-nav-link__dot"></span>
+                    عرض الموقع
+                </a>
+                <form method="POST" action="{{ route('admin.logout') }}">
+                    @csrf
+                    <button type="submit" class="admin-nav-link admin-nav-link--muted w-full text-start">
+                        <span class="admin-nav-link__dot"></span>
+                        تسجيل الخروج
+                    </button>
+                </form>
+            </div>
         </aside>
 
         <div class="min-w-0">

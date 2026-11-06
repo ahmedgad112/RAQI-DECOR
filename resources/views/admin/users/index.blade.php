@@ -53,13 +53,13 @@
                         @endif
                     </td>
                     <td class="px-4 py-3">
-                        <div class="flex gap-3">
-                            <a href="{{ route('admin.users.edit', $user) }}" class="text-gold">تعديل</a>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="{{ route('admin.users.edit', $user) }}" class="admin-action-btn admin-action-btn--gold">تعديل</a>
                             @unless ($user->is(auth()->user()))
                                 <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('حذف المستخدم؟')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-700">حذف</button>
+                                    <button type="submit" class="admin-action-btn admin-action-btn--danger">حذف</button>
                                 </form>
                             @endunless
                         </div>

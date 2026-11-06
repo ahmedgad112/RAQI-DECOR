@@ -5,16 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreContactMessageRequest;
 use App\Models\ContactMessage;
 use App\Models\SiteSetting;
+use App\Services\SeoService;
+use App\Services\SettingsService;
 use App\Services\WhatsAppLinkBuilder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class ContactController extends Controller
 {
-    public function create(): View
+    public function create(SettingsService $settingsService, SeoService $seo): View
     {
+        $settings = SiteSetting::cached();
+
         return view('frontend.contact', [
-            'settings' => SiteSetting::cached(),
+            'settings' => $settings,
+            'seoMeta' => $seo->forContact($settings),
+            'mapEmbedUrl' => $settingsService->mapEmbedUrl($settings),
+            'mapExternalUrl' => $settingsService->mapExternalUrl($settings),
         ]);
     }
 

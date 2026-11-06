@@ -19,7 +19,7 @@ class ProjectController extends Controller
     public function index(Request $request): View
     {
         $projects = Project::query()
-            ->with('category')
+            ->with(['category', 'coverImageRelation'])
             ->withCount('images')
             ->when($request->filled('q'), function ($query) use ($request) {
                 $term = '%'.$request->string('q').'%';

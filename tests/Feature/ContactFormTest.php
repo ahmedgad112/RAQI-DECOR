@@ -10,6 +10,18 @@ class ContactFormTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_contact_page_shows_location_map(): void
+    {
+        $this->seed(SiteSettingSeeder::class);
+
+        $this->get(route('contact'))
+            ->assertOk()
+            ->assertSee('صناعية الشفا، بدر، الرياض 14727', false)
+            ->assertSee('maps.google.com/maps?q=24.527918,46.710465', false)
+            ->assertSee('https://maps.app.goo.gl/aUPpKLkPHEEJkAREA', false)
+            ->assertSee('موقعنا على الخريطة', false);
+    }
+
     public function test_contact_form_stores_message(): void
     {
         $this->seed(SiteSettingSeeder::class);

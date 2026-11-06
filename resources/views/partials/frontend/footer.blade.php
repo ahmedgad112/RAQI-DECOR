@@ -11,7 +11,7 @@
                 <p class="font-display mt-4 text-3xl tracking-[0.2em]">{{ $siteSettings['site_name_en'] ?? 'RAQI DECOR' }}</p>
                 <p class="mt-3 text-sm text-beige">{{ $siteSettings['site_name_ar'] ?? 'راقي ديكور' }}</p>
                 <p class="mt-6 max-w-md text-sm leading-8 text-ivory/70">{{ $siteSettings['tagline_ar'] ?? '' }}</p>
-                <a href="{{ route('contact') }}" class="btn-gold-outline mt-8 !border-ivory/25 !text-ivory hover:!border-gold hover:!bg-gold hover:!text-pure">ابدأ مشروعك</a>
+                <a href="{{ route('contact') }}" class="btn-gold mt-8">ابدأ مشروعك</a>
             </div>
 
             <div class="md:col-span-3">
@@ -36,7 +36,11 @@
                         <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="block hover:text-gold" dir="ltr">واتساب {{ $siteSettings['contact_whatsapp'] }}</a>
                     @endif
                     @if (! empty($siteSettings['contact_address_ar']))
-                        <p>{{ $siteSettings['contact_address_ar'] }}</p>
+                        @if (! empty($mapExternalUrl))
+                            <a href="{{ $mapExternalUrl }}" target="_blank" rel="noopener noreferrer" class="block hover:text-gold">{{ $siteSettings['contact_address_ar'] }}</a>
+                        @else
+                            <p>{{ $siteSettings['contact_address_ar'] }}</p>
+                        @endif
                     @endif
                 </div>
             </div>

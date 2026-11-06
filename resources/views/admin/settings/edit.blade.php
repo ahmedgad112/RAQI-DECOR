@@ -193,6 +193,18 @@
                 <label class="admin-label">العنوان إنجليزي</label>
                 <input type="text" name="contact_address_en" value="{{ old('contact_address_en', $settings['contact_address_en'] ?? '') }}" class="admin-input">
             </div>
+            <div class="md:col-span-3">
+                <label class="admin-label">رابط خريطة جوجل</label>
+                <input type="url" name="contact_map_url" value="{{ old('contact_map_url', $settings['contact_map_url'] ?? '') }}" class="admin-input" dir="ltr" placeholder="https://maps.app.goo.gl/...">
+            </div>
+            <div>
+                <label class="admin-label">خط العرض (Latitude)</label>
+                <input type="text" name="contact_map_lat" value="{{ old('contact_map_lat', $settings['contact_map_lat'] ?? '') }}" class="admin-input" dir="ltr" placeholder="24.527918">
+            </div>
+            <div>
+                <label class="admin-label">خط الطول (Longitude)</label>
+                <input type="text" name="contact_map_lng" value="{{ old('contact_map_lng', $settings['contact_map_lng'] ?? '') }}" class="admin-input" dir="ltr" placeholder="46.710465">
+            </div>
         </div>
     </section>
 
@@ -256,13 +268,15 @@
             <p class="mt-1 text-sm text-brown/55">عناوين محركات البحث والأرقام الظاهرة في الموقع.</p>
         </div>
         <div class="grid gap-5 md:grid-cols-2">
-            <div>
-                <label class="admin-label">SEO Title</label>
-                <input type="text" name="seo_title" value="{{ old('seo_title', $settings['seo_title'] ?? '') }}" class="admin-input">
+            <div class="md:col-span-2">
+                <label class="admin-label">SEO Title (الصفحة الرئيسية)</label>
+                <input type="text" name="seo_title" value="{{ old('seo_title', $settings['seo_title'] ?? '') }}" class="admin-input" maxlength="70">
+                <p class="mt-1 text-xs text-brown/45">يفضّل 50–60 حرفاً. يظهر في نتائج البحث ومشاركة الروابط.</p>
             </div>
-            <div>
-                <label class="admin-label">SEO Description</label>
-                <input type="text" name="seo_description" value="{{ old('seo_description', $settings['seo_description'] ?? '') }}" class="admin-input">
+            <div class="md:col-span-2">
+                <label class="admin-label">SEO Description (الصفحة الرئيسية)</label>
+                <textarea name="seo_description" rows="3" class="admin-input" maxlength="160">{{ old('seo_description', $settings['seo_description'] ?? '') }}</textarea>
+                <p class="mt-1 text-xs text-brown/45">يفضّل 140–160 حرفاً. صفّ ما يقدّمه الاستوديو بجملة واضحة.</p>
             </div>
             <div>
                 <label class="admin-label">مشاريع مكتملة (رقم حقيقي فقط)</label>

@@ -42,13 +42,11 @@
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         @foreach ($projects as $project)
             @php
-                $cover = $project->cover_image
-                    ? \Illuminate\Support\Facades\Storage::disk('public')->url($project->cover_image)
-                    : asset('images/project-placeholder.svg');
+                $cover = $project->coverUrl('medium');
             @endphp
             <article class="admin-card group overflow-hidden !p-0">
                 <div class="relative aspect-[16/10] overflow-hidden bg-mist">
-                    <img src="{{ $cover }}" alt="{{ $project->title_ar }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" loading="lazy">
+                    <img src="{{ $cover }}" alt="{{ $project->title_ar }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" loading="lazy" decoding="async" width="960" height="600">
                     <div class="absolute inset-x-0 top-0 flex flex-wrap gap-2 p-3">
                         <span class="rounded-full px-2.5 py-1 text-[10px] font-medium tracking-wide {{ $project->is_published ? 'bg-emerald-700/90 text-pure' : 'bg-charcoal/70 text-ivory/80' }}">
                             {{ $project->is_published ? 'منشور' : 'مسودة' }}

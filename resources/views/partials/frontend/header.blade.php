@@ -25,7 +25,7 @@
                     <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'is-active' : '' }}">من نحن</a>
                 </nav>
 
-                <a href="{{ route('contact') }}" class="btn-gold-outline hidden !px-5 !py-2 text-[11px] md:inline-flex">تواصل</a>
+                <a href="{{ route('contact') }}" class="btn-gold-outline hidden !px-5 !py-2 text-[11px] tracking-[0.18em] md:inline-flex">تواصل</a>
 
                 <button type="button" class="menu-toggle md:hidden" data-mobile-toggle aria-expanded="false" aria-controls="mobile-nav" aria-label="القائمة">
                     <span class="menu-line"></span>

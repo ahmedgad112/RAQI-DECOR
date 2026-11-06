@@ -1,6 +1,5 @@
 @extends('layouts.frontend')
 
-@section('content')
 @php
     $heroImage = ! empty($settings['hero_image'])
         ? \Illuminate\Support\Facades\Storage::disk('public')->url($settings['hero_image'])
@@ -13,12 +12,20 @@
     };
 @endphp
 
+@section('preload')
+    <link rel="preload" as="image" href="{{ $heroImage }}" fetchpriority="high">
+@endsection
+
+@section('content')
 <section class="relative min-h-[100svh] overflow-hidden">
     <img
         src="{{ $heroImage }}"
         alt="{{ $settings['site_name_ar'] ?? 'RAQI DECOR' }}"
         class="absolute inset-0 h-full w-full scale-105 object-cover {{ $heroPosition }} transition-transform duration-[8s] ease-out will-change-transform"
         fetchpriority="high"
+        decoding="async"
+        width="1920"
+        height="1080"
         data-hero-image
     >
     <div class="hero-scrim absolute inset-0"></div>
@@ -29,14 +36,14 @@
             <h1 class="reveal reveal-delay-1 mt-5 heading-xl">{{ $settings['hero_title_ar'] ?? 'نحوّل المساحات إلى تجارب معيشة راقية' }}</h1>
             <p class="reveal reveal-delay-2 mt-6 max-w-xl text-base leading-8 text-ivory/80 md:text-lg">{{ $settings['hero_subtitle_ar'] ?? '' }}</p>
             <div class="reveal reveal-delay-3 mt-10 flex flex-wrap items-center gap-4">
-                <a href="{{ route('projects.index') }}" class="btn-gold-outline !border-ivory/40 !text-ivory hover:!border-gold hover:!bg-gold hover:!text-pure">استكشف أعمالنا</a>
-                <a href="{{ route('contact') }}" class="btn-ghost !text-ivory/80 hover:!text-ivory">تواصل معنا</a>
+                <a href="{{ route('projects.index') }}" class="btn-gold">استكشف أعمالنا</a>
+                <a href="{{ route('contact') }}" class="btn-ghost btn-on-dark">تواصل معنا</a>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-space">
+<section class="section-space cv-auto">
     <div class="site-container">
         <div class="grid items-stretch gap-6 lg:grid-cols-12">
             <div class="reveal surface p-8 md:p-10 lg:col-span-5">
@@ -85,7 +92,7 @@
             @foreach ($categories as $index => $category)
                 <a href="{{ route('projects.index', ['category' => $category->slug]) }}" class="reveal group relative block min-h-[22rem] overflow-hidden rounded-[1.75rem]" style="transition-delay: {{ $index * 0.1 }}s">
                     @if ($category->image_path)
-                        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($category->image_path) }}" alt="{{ $category->name_ar }}" class="absolute inset-0 h-full w-full object-cover transition duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105" loading="lazy">
+                        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($category->image_path) }}" alt="{{ $category->name_ar }}" class="absolute inset-0 h-full w-full object-cover transition duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105" loading="lazy" decoding="async" width="960" height="1280">
                     @else
                         <div class="absolute inset-0 bg-gradient-to-br from-beige via-mist to-brown/30"></div>
                     @endif
@@ -105,7 +112,7 @@
 @php $showcase = $featuredProjects->isNotEmpty() ? $featuredProjects : $latestProjects; @endphp
 
 @if ($showcase->isNotEmpty())
-<section class="section-space">
+<section class="section-space cv-auto">
     <div class="site-container">
         <div class="reveal mb-12 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -131,7 +138,7 @@
                 <p class="eyebrow !text-gold">Next Project</p>
                 <h2 class="heading-md mt-4 text-ivory">هل لديك مساحة تستحق تصميماً أهدأ وأكثر دقة؟</h2>
             </div>
-            <a href="{{ route('contact') }}" class="btn-gold-outline mt-8 !border-ivory/30 !text-ivory hover:!border-gold hover:!bg-gold hover:!text-pure md:mt-0">لنبدأ الحديث</a>
+            <a href="{{ route('contact') }}" class="btn-gold mt-8 shrink-0 md:mt-0">لنبدأ الحديث</a>
         </div>
     </div>
 </section>

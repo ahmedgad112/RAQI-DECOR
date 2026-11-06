@@ -24,7 +24,7 @@ class SecurityHeaders
         if (! $response->headers->has('Content-Security-Policy')) {
             $response->headers->set(
                 'Content-Security-Policy',
-                "default-src 'self'; img-src 'self' data: blob: https:; media-src 'self' data:; font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                "default-src 'self'; img-src 'self' data: blob: https:; media-src 'self' data:; font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; frame-src 'self' https://maps.google.com https://www.google.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
             );
         }
 

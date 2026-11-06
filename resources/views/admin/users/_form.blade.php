@@ -53,7 +53,7 @@
     <div id="permissions-panel" class="space-y-3 rounded-2xl border border-beige/80 bg-ivory/50 p-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="text-sm text-brown/70">أقسام الموقع</p>
-            <button type="button" id="select-all-permissions" class="text-xs text-gold">تحديد الكل</button>
+            <button type="button" id="select-all-permissions" class="admin-action-btn admin-action-btn--gold">تحديد الكل</button>
         </div>
 
         <div class="grid gap-3 sm:grid-cols-2">

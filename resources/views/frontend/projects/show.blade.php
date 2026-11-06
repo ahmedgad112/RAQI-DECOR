@@ -1,19 +1,17 @@
-@extends('layouts.frontend', [
-    'seoTitle' => $project->meta_title ?: ($project->title_ar.' | RAQI DECOR'),
-    'seoDescription' => $project->meta_description ?: ($project->excerpt_ar ?: $project->excerpt_en),
-    'ogImageUrl' => $project->cover_image ? url(\Illuminate\Support\Facades\Storage::disk('public')->url($project->cover_image)) : null,
-])
+@extends('layouts.frontend')
 
-@section('content')
 @php
-    $cover = $project->cover_image
-        ? \Illuminate\Support\Facades\Storage::disk('public')->url($project->cover_image)
-        : ($project->coverImage()?->url('large') ?? asset('images/project-placeholder.svg'));
+    $cover = $project->coverUrl('large');
 @endphp
 
+@section('preload')
+    <link rel="preload" as="image" href="{{ $cover }}" fetchpriority="high">
+@endsection
+
+@section('content')
 <article>
     <section class="relative min-h-[78vh] overflow-hidden">
-        <img src="{{ $cover }}" alt="{{ $project->title_ar }}" class="absolute inset-0 h-full w-full object-cover" fetchpriority="high">
+        <img src="{{ $cover }}" alt="{{ $project->title_ar }}" class="absolute inset-0 h-full w-full object-cover" fetchpriority="high" decoding="async" width="1600" height="900">
         <div class="hero-scrim absolute inset-0"></div>
         <div class="site-container relative flex min-h-[78vh] items-end pb-16 pt-32">
             <div class="max-w-3xl text-ivory">
@@ -106,19 +104,13 @@
         </section>
     @endif
 </article>
+@endsection
 
 @push('meta')
 <script type="application/ld+json">
-{!! json_encode([
-    '@context' => 'https://schema.org',
-    '@type' => 'CreativeWork',
-    'name' => $project->title_en,
-    'alternateName' => $project->title_ar,
-    'description' => $project->excerpt_en ?: $project->excerpt_ar,
-    'datePublished' => optional($project->published_at)->toAtomString(),
-    'image' => $cover,
-    'url' => route('projects.show', $project),
-], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) !!}
+{!! json_encode($projectSchema, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) !!}
+</script>
+<script type="application/ld+json">
+{!! json_encode($breadcrumbSchema, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) !!}
 </script>
 @endpush
-@endsection

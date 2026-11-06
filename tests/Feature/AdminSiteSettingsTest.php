@@ -65,6 +65,10 @@ class AdminSiteSettingsTest extends TestCase
                 'site_name_en' => 'RAQI DECOR',
                 'tagline_ar' => 'تصميم راقٍ',
                 'contact_email' => 'hello@raqidecor.com',
+                'contact_address_ar' => 'صناعية الشفا، بدر، الرياض 14727',
+                'contact_map_url' => 'https://maps.app.goo.gl/aUPpKLkPHEEJkAREA',
+                'contact_map_lat' => '24.527918',
+                'contact_map_lng' => '46.710465',
                 'social_links' => [
                     ['label' => 'Instagram', 'url' => 'https://instagram.com/raqidecor'],
                     ['label' => 'Facebook', 'url' => 'https://facebook.com/raqidecor'],
@@ -84,6 +88,8 @@ class AdminSiteSettingsTest extends TestCase
         $this->assertSame('Instagram', $decoded[0]['label']);
         $this->assertSame('https://instagram.com/raqidecor', $decoded[0]['url']);
         $this->assertSame('12', SiteSetting::query()->where('key', 'projects_completed')->value('value'));
+        $this->assertSame('24.527918', SiteSetting::query()->where('key', 'contact_map_lat')->value('value'));
+        $this->assertSame('https://maps.app.goo.gl/aUPpKLkPHEEJkAREA', SiteSetting::query()->where('key', 'contact_map_url')->value('value'));
 
         $this->actingAs($admin)
             ->put(route('admin.settings.update'), [

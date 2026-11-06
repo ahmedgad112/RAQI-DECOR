@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -69,6 +71,11 @@ class Project extends Model
         return $this->hasMany(ProjectImage::class)->orderBy('sort_order');
     }
 
+    public function coverImageRelation(): HasOne
+    {
+        return $this->hasOne(ProjectImage::class)->where('is_cover', true);
+    }
+
     #[Scope]
     protected function published(Builder $query): Builder
     {
@@ -98,7 +105,37 @@ class Project extends Model
 
     public function coverImage(): ?ProjectImage
     {
-        return $this->images->firstWhere('is_cover', true) ?? $this->images->first();
+        if ($this->relationLoaded('coverImageRelation') && $this->coverImageRelation) {
+            return $this->coverImageRelation;
+        }
+
+        if ($this->relationLoaded('images')) {
+            return $this->images->firstWhere('is_cover', true) ?? $this->images->first();
+        }
+
+        return $this->coverImageRelation()->first()
+            ?? $this->images()->orderBy('sort_order')->first();
+    }
+
+    public function coverUrl(string $variant = 'medium'): string
+    {
+        $image = $this->coverImage();
+
+        if ($image) {
+            return $image->url($variant);
+        }
+
+        if (filled($this->cover_image)) {
+            $candidate = preg_replace('#/(?:original|thumb|medium|large)/#', "/{$variant}/", $this->cover_image) ?: $this->cover_image;
+
+            if ($candidate !== $this->cover_image && Storage::disk('public')->exists($candidate)) {
+                return Storage::disk('public')->url($candidate);
+            }
+
+            return Storage::disk('public')->url($this->cover_image);
+        }
+
+        return asset('images/project-placeholder.svg');
     }
 
     public static function uniqueSlug(string $value, ?int $ignoreId = null): string
