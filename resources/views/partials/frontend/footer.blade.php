@@ -40,16 +40,6 @@
                         </a>
                     @endif
 
-                    @if (! empty($whatsappUrl))
-                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 hover:text-gold">
-                            <i class="fa-brands fa-whatsapp mt-0.5 w-4 shrink-0 text-gold" aria-hidden="true"></i>
-                            <span>
-                                واتساب
-                                <span class="ms-1" dir="ltr">{{ $siteSettings['contact_whatsapp'] }}</span>
-                            </span>
-                        </a>
-                    @endif
-
                     @if (! empty($siteSettings['contact_address_ar']))
                         @if (! empty($mapExternalUrl))
                             <a href="{{ $mapExternalUrl }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 hover:text-gold">
