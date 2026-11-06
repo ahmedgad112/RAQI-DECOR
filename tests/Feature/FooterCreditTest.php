@@ -20,7 +20,8 @@ class FooterCreditTest extends TestCase
             ->assertSee('https://zeusmediaeg.com/', false)
             ->assertDontSee('MODERN INTERIOR STUDIO')
             ->assertSee('fa-solid fa-phone', false)
+            ->assertSee('fa-brands fa-whatsapp mt-0.5 w-4 shrink-0 text-gold', false)
             ->assertSee('fa-solid fa-location-dot', false)
-            ->assertDontSee('fa-brands fa-whatsapp mt-0.5 w-4 shrink-0 text-gold', false);
+            ->assertSee('https://wa.me/966501094405', false);
     }
 }
