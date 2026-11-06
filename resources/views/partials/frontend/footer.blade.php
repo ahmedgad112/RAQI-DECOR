@@ -25,36 +25,67 @@
 
             <div class="md:col-span-3">
                 <p class="eyebrow !text-gold">تواصل</p>
-                <div class="mt-5 space-y-3 text-sm text-ivory/75">
+                <div class="mt-5 space-y-4 text-sm text-ivory/75">
                     @if (! empty($siteSettings['contact_email']))
-                        <a href="mailto:{{ $siteSettings['contact_email'] }}" class="block hover:text-gold">{{ $siteSettings['contact_email'] }}</a>
+                        <a href="mailto:{{ $siteSettings['contact_email'] }}" class="flex items-start gap-3 hover:text-gold">
+                            <i class="fa-solid fa-envelope mt-0.5 w-4 shrink-0 text-gold" aria-hidden="true"></i>
+                            <span class="min-w-0 break-all">{{ $siteSettings['contact_email'] }}</span>
+                        </a>
                     @endif
+
                     @if (! empty($siteSettings['contact_phone']))
-                        <a href="tel:{{ $siteSettings['contact_phone'] }}" class="block hover:text-gold" dir="ltr">{{ $siteSettings['contact_phone'] }}</a>
+                        <a href="tel:{{ $siteSettings['contact_phone'] }}" class="flex items-start gap-3 hover:text-gold">
+                            <i class="fa-solid fa-phone mt-0.5 w-4 shrink-0 text-gold" aria-hidden="true"></i>
+                            <span dir="ltr">{{ $siteSettings['contact_phone'] }}</span>
+                        </a>
                     @endif
+
                     @if (! empty($whatsappUrl))
-                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="block hover:text-gold" dir="ltr">واتساب {{ $siteSettings['contact_whatsapp'] }}</a>
+                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 hover:text-gold">
+                            <i class="fa-brands fa-whatsapp mt-0.5 w-4 shrink-0 text-gold" aria-hidden="true"></i>
+                            <span>
+                                واتساب
+                                <span class="ms-1" dir="ltr">{{ $siteSettings['contact_whatsapp'] }}</span>
+                            </span>
+                        </a>
                     @endif
+
                     @if (! empty($siteSettings['contact_address_ar']))
                         @if (! empty($mapExternalUrl))
-                            <a href="{{ $mapExternalUrl }}" target="_blank" rel="noopener noreferrer" class="block hover:text-gold">{{ $siteSettings['contact_address_ar'] }}</a>
+                            <a href="{{ $mapExternalUrl }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 hover:text-gold">
+                                <i class="fa-solid fa-location-dot mt-0.5 w-4 shrink-0 text-gold" aria-hidden="true"></i>
+                                <span>{{ $siteSettings['contact_address_ar'] }}</span>
+                            </a>
                         @else
-                            <p>{{ $siteSettings['contact_address_ar'] }}</p>
+                            <p class="flex items-start gap-3">
+                                <i class="fa-solid fa-location-dot mt-0.5 w-4 shrink-0 text-gold" aria-hidden="true"></i>
+                                <span>{{ $siteSettings['contact_address_ar'] }}</span>
+                            </p>
                         @endif
                     @endif
                 </div>
+
+                @if (! empty($socialLinks))
+                    <div class="mt-6">
+                        @include('partials.frontend.social-links', [
+                            'tone' => 'dark',
+                            'class' => 'flex flex-wrap items-center gap-2.5',
+                        ])
+                    </div>
+                @endif
             </div>
         </div>
 
-        @if (! empty($socialLinks))
-            <div class="mt-10 border-t border-ivory/10 pt-6">
-                @include('partials.frontend.social-links', ['tone' => 'dark'])
-            </div>
-        @endif
-
         <div class="mt-12 flex flex-col gap-3 border-t border-ivory/10 pt-6 text-xs text-ivory/45 sm:flex-row sm:items-center sm:justify-between">
             <p>&copy; {{ date('Y') }} {{ $siteSettings['site_name_en'] ?? 'RAQI DECOR' }}</p>
-            <p class="font-display tracking-[0.2em]">MODERN INTERIOR STUDIO</p>
+            <a
+                href="https://zeusmediaeg.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-gold"
+            >
+                صنع بواسطة zeus media
+            </a>
         </div>
     </div>
 </footer>
