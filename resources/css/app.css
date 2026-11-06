@@ -620,50 +620,52 @@
 }
 
 .contact-fab {
-    @apply fixed z-[70] flex flex-col items-center gap-3;
+    @apply fixed z-[70] flex flex-col items-end gap-3;
     inset-inline-end: 1.25rem;
     bottom: 1.25rem;
 }
 
-.contact-fab__actions {
-    @apply flex flex-col items-center gap-3;
-    pointer-events: none;
-}
-
-.contact-fab__action {
-    @apply relative flex h-14 w-14 items-center justify-center rounded-full text-xl text-pure shadow-lg;
+.contact-fab__panel {
+    @apply w-[min(18.5rem,calc(100vw-2.5rem))] p-5;
     opacity: 0;
-    transform: translateY(0.75rem) scale(0.85);
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(0.75rem) scale(0.96);
+    transform-origin: bottom inset-inline-end;
     transition:
         opacity 0.3s var(--ease-luxury),
         transform 0.3s var(--ease-luxury),
-        box-shadow 0.3s var(--ease-luxury);
+        visibility 0.3s var(--ease-luxury);
 }
 
-.contact-fab.is-open .contact-fab__actions {
-    pointer-events: auto;
-}
-
-.contact-fab.is-open .contact-fab__action {
+.contact-fab.is-open .contact-fab__panel {
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
     transform: translateY(0) scale(1);
 }
 
-.contact-fab.is-open .contact-fab__action:nth-child(1) {
-    transition-delay: 0.04s;
+.contact-fab__grid {
+    @apply mt-5 grid grid-cols-3 gap-2.5;
 }
 
-.contact-fab.is-open .contact-fab__action:nth-child(2) {
-    transition-delay: 0.08s;
+.contact-fab__action {
+    @apply flex flex-col items-center justify-center gap-1.5 rounded-2xl px-2 py-3 text-[11px] tracking-[0.08em] text-pure;
+    min-height: 4.5rem;
+    transition:
+        transform 0.3s var(--ease-luxury),
+        box-shadow 0.3s var(--ease-luxury),
+        filter 0.3s var(--ease-luxury);
 }
 
-.contact-fab.is-open .contact-fab__action:nth-child(3) {
-    transition-delay: 0.12s;
+.contact-fab__action i {
+    @apply text-xl leading-none;
 }
 
 .contact-fab__action:hover {
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 14px 28px rgba(28, 26, 24, 0.22);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(28, 26, 24, 0.18);
+    filter: brightness(1.05);
 }
 
 .contact-fab__action--whatsapp {
@@ -678,21 +680,53 @@
     background: var(--color-gold);
 }
 
-.contact-fab__tooltip {
-    @apply pointer-events-none absolute top-1/2 whitespace-nowrap rounded-full bg-charcoal px-3 py-1 text-[11px] tracking-[0.12em] text-ivory;
-    inset-inline-end: calc(100% + 0.65rem);
-    transform: translateY(-50%);
-    opacity: 0;
-    transition: opacity 0.25s var(--ease-luxury);
+.contact-fab__action--social {
+    background: var(--color-charcoal);
 }
 
-.contact-fab__action:hover .contact-fab__tooltip,
-.contact-fab__action:focus-visible .contact-fab__tooltip {
-    opacity: 1;
+.contact-fab__action--instagram {
+    background: linear-gradient(135deg, #f58529, #dd2a7b 48%, #8134af);
+}
+
+.contact-fab__action--facebook {
+    background: #1877f2;
+}
+
+.contact-fab__action--tiktok {
+    background: #111111;
+}
+
+.contact-fab__action--youtube {
+    background: #ff0000;
+}
+
+.contact-fab__action--linkedin {
+    background: #0a66c2;
+}
+
+.contact-fab__action--x {
+    background: #111111;
+}
+
+.contact-fab__action--snapchat {
+    background: #fffc00;
+    color: var(--color-charcoal);
+}
+
+.contact-fab__action--pinterest {
+    background: #e60023;
+}
+
+.contact-fab__action--behance {
+    background: #1769ff;
+}
+
+.contact-fab__action--threads {
+    background: #111111;
 }
 
 .contact-fab__toggle {
-    @apply relative flex h-16 w-16 items-center justify-center rounded-full text-2xl text-pure;
+    @apply relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl text-pure;
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 58%),
         var(--color-gold);
@@ -742,13 +776,10 @@
         inset-inline-end: 1rem;
         bottom: 1rem;
     }
-
-    .contact-fab__tooltip {
-        display: none;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .contact-fab__panel,
     .contact-fab__action,
     .contact-fab__toggle,
     .contact-fab__icon-open,
