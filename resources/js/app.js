@@ -101,6 +101,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const successPopup = document.querySelector('[data-success-popup]');
+    const contactFab = document.querySelector('[data-contact-fab]');
+    const contactFabToggle = document.querySelector('[data-contact-fab-toggle]');
+    const contactFabActions = document.querySelector('[data-contact-fab-actions]');
+
+    const setContactFabOpen = (open) => {
+        if (!contactFab || !contactFabToggle) {
+            return;
+        }
+
+        contactFab.classList.toggle('is-open', open);
+        contactFabToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        contactFabActions?.setAttribute('aria-hidden', open ? 'false' : 'true');
+    };
+
+    contactFabToggle?.addEventListener('click', () => {
+        const open = contactFabToggle.getAttribute('aria-expanded') !== 'true';
+        setContactFabOpen(open);
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!contactFab || !contactFab.classList.contains('is-open')) {
+            return;
+        }
+
+        if (!contactFab.contains(event.target)) {
+            setContactFabOpen(false);
+        }
+    });
 
     const setSuccessOpen = (open) => {
         if (!successPopup) {
@@ -139,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeLightbox();
             setSuccessOpen(false);
             setMenuOpen(false);
+            setContactFabOpen(false);
         }
     });
 

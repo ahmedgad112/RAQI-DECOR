@@ -73,6 +73,7 @@
     </main>
 
     @include('partials.frontend.footer')
+    @include('partials.frontend.contact-fab')
     @include('partials.frontend.success-popup')
 
     <div class="lightbox" data-lightbox role="dialog" aria-modal="true" aria-label="معاينة الصورة">
